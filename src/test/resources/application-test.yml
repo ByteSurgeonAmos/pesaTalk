@@ -1,0 +1,50 @@
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: false
+
+  task:
+    scheduling:
+      pool:
+        size: 2
+
+# Disable scheduling in tests
+  main:
+    allow-bean-definition-overriding: true
+
+# WhatsApp test config
+whatsapp:
+  api:
+    base-url: http://localhost:8089
+    phone-number-id: "123456789"
+    access-token: "test-token"
+    verify-token: "test-verify-token"
+    app-secret: "test-app-secret"
+
+# MPesa test config
+mpesa:
+  api:
+    base-url: http://localhost:8089
+
+# Encryption
+encryption:
+  phone-key: "0123456789abcdef0123456789abcdef"
+
+# Transaction limits for testing
+transaction:
+  daily-limit: 150000
+  min-amount: 10
+  max-amount: 70000
+  airtime:
+    min-amount: 5
+    max-amount: 10000
+
+logging:
+  level:
+    root: WARN
+    com.pesatalk: INFO
+    org.testcontainers: INFO
