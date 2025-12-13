@@ -1,0 +1,140 @@
+spring:
+  application:
+    name: pesatalk
+
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:dev}
+
+  datasource:
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/pesatalk}
+    username: ${DATABASE_USERNAME:pesatalk}
+    password: ${DATABASE_PASSWORD:}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 5
+      idle-timeout: 300000
+      connection-timeout: 20000
+      max-lifetime: 1200000
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: false
+        jdbc:
+          time_zone: UTC
+        envers:
+          audit_table_suffix: _audit
+          revision_field_name: revision_id
+          revision_type_field_name: revision_type
+    open-in-view: false
+
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:}
+      timeout: 2000ms
+      lettuce:
+        pool:
+          max-active: 8
+          max-idle: 8
+          min-idle: 2
+
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+    deserialization:
+      fail-on-unknown-properties: false
+    default-property-inclusion: non_null
+
+  task:
+    execution:
+      pool:
+        core-size: 5
+        max-size: 20
+        queue-capacity: 100
+      thread-name-prefix: pesatalk-async-
+
+server:
+  port: ${SERVER_PORT:8080}
+  shutdown: graceful
+  error:
+    include-message: never
+    include-stacktrace: never
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: when_authorized
+  metrics:
+    tags:
+      application: ${spring.application.name}
+
+# WhatsApp Configuration
+whatsapp:
+  api:
+    base-url: https://graph.facebook.com/v18.0
+    phone-number-id: ${WHATSAPP_PHONE_NUMBER_ID:}
+    access-token: ${WHATSAPP_ACCESS_TOKEN:}
+    verify-token: ${WHATSAPP_VERIFY_TOKEN:}
+    app-secret: ${WHATSAPP_APP_SECRET:}
+  webhook:
+    timeout-seconds: 15
+
+# MPesa Configuration
+mpesa:
+  api:
+    base-url: ${MPESA_API_BASE_URL:https://sandbox.safaricom.co.ke}
+    consumer-key: ${MPESA_CONSUMER_KEY:}
+    consumer-secret: ${MPESA_CONSUMER_SECRET:}
+    passkey: ${MPESA_PASSKEY:}
+    shortcode: ${MPESA_SHORTCODE:}
+    callback-url: ${MPESA_CALLBACK_URL:}
+  token:
+    cache-ttl-seconds: 3500
+
+# Rate Limiting
+rate-limit:
+  requests-per-minute: 60
+  burst-capacity: 10
+
+# Resilience4j Configuration
+resilience4j:
+  circuitbreaker:
+    instances:
+      mpesa:
+        sliding-window-size: 10
+        failure-rate-threshold: 50
+        wait-duration-in-open-state: 30s
+        permitted-number-of-calls-in-half-open-state: 3
+      whatsapp:
+        sliding-window-size: 10
+        failure-rate-threshold: 50
+        wait-duration-in-open-state: 30s
+        permitted-number-of-calls-in-half-open-state: 3
+  retry:
+    instances:
+      mpesa:
+        max-attempts: 3
+        wait-duration: 2s
+        exponential-backoff-multiplier: 2
+      whatsapp:
+        max-attempts: 3
+        wait-duration: 1s
+        exponential-backoff-multiplier: 2
+
+logging:
+  level:
+    root: INFO
+    com.pesatalk: INFO
+    org.springframework.security: WARN
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"

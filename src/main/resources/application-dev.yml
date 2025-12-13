@@ -1,0 +1,30 @@
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
+# MPesa Sandbox
+mpesa:
+  api:
+    base-url: https://sandbox.safaricom.co.ke
+
+logging:
+  level:
+    com.pesatalk: DEBUG
+    org.springframework.web: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+
+# Development rate limits (more lenient)
+rate-limit:
+  requests-per-minute: 120
+  burst-capacity: 20
