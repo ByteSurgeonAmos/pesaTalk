@@ -25,12 +25,14 @@ public class SecurityConfig {
                 .requestMatchers("/actuator/health", "/actuator/health/**").permitAll()
                 .requestMatchers("/actuator/info").permitAll()
                 .requestMatchers("/actuator/prometheus").permitAll()
-
+                    .requestMatchers(HttpMethod.GET, "/health").permitAll()
+                    .requestMatchers(HttpMethod.GET, "/ready").permitAll()
+                    .requestMatchers(HttpMethod.GET, "/live").permitAll()
                 // WhatsApp webhook endpoints (verified via custom signature validation)
                 .requestMatchers(HttpMethod.GET, "/webhook").permitAll()
                 .requestMatchers(HttpMethod.POST, "/webhook").permitAll()
 
-                // MPesa callback endpoints (verified via custom validation)
+                    // MPesa callback endpoints (verified via custom validation)
                 .requestMatchers("/callback/**").permitAll()
 
                 // All other requests require authentication
