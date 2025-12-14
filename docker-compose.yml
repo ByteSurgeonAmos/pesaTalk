@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   app:
     build:
@@ -9,24 +7,24 @@ services:
     ports:
       - "8080:8080"
     environment:
-      - SPRING_PROFILES_ACTIVE=prod
+      - SPRING_PROFILES_ACTIVE=${SPRING_PROFILES_ACTIVE:-dev}
       - DATABASE_URL=jdbc:postgresql://postgres:5432/pesatalk
       - DATABASE_USERNAME=pesatalk
       - DATABASE_PASSWORD=${DATABASE_PASSWORD:-pesatalk_secret}
       - REDIS_HOST=redis
       - REDIS_PORT=6379
       - REDIS_PASSWORD=${REDIS_PASSWORD:-}
-      - WHATSAPP_PHONE_NUMBER_ID=${WHATSAPP_PHONE_NUMBER_ID}
-      - WHATSAPP_ACCESS_TOKEN=${WHATSAPP_ACCESS_TOKEN}
-      - WHATSAPP_VERIFY_TOKEN=${WHATSAPP_VERIFY_TOKEN}
-      - WHATSAPP_APP_SECRET=${WHATSAPP_APP_SECRET}
+      - WHATSAPP_PHONE_NUMBER_ID=${WHATSAPP_PHONE_NUMBER_ID:-placeholder}
+      - WHATSAPP_ACCESS_TOKEN=${WHATSAPP_ACCESS_TOKEN:-placeholder}
+      - WHATSAPP_VERIFY_TOKEN=${WHATSAPP_VERIFY_TOKEN:-dev-verify-token}
+      - WHATSAPP_APP_SECRET=${WHATSAPP_APP_SECRET:-placeholder}
       - MPESA_API_BASE_URL=${MPESA_API_BASE_URL:-https://sandbox.safaricom.co.ke}
-      - MPESA_CONSUMER_KEY=${MPESA_CONSUMER_KEY}
-      - MPESA_CONSUMER_SECRET=${MPESA_CONSUMER_SECRET}
-      - MPESA_PASSKEY=${MPESA_PASSKEY}
-      - MPESA_SHORTCODE=${MPESA_SHORTCODE}
-      - MPESA_CALLBACK_URL=${MPESA_CALLBACK_URL}
-      - ENCRYPTION_PHONE_KEY=${ENCRYPTION_PHONE_KEY}
+      - MPESA_CONSUMER_KEY=${MPESA_CONSUMER_KEY:-placeholder}
+      - MPESA_CONSUMER_SECRET=${MPESA_CONSUMER_SECRET:-placeholder}
+      - MPESA_PASSKEY=${MPESA_PASSKEY:-placeholder}
+      - MPESA_SHORTCODE=${MPESA_SHORTCODE:-174379}
+      - MPESA_CALLBACK_URL=${MPESA_CALLBACK_URL:-http://localhost:8080}
+      - ENCRYPTION_PHONE_KEY=${ENCRYPTION_PHONE_KEY:-0123456789abcdef0123456789abcdef}
     depends_on:
       postgres:
         condition: service_healthy
@@ -40,7 +38,7 @@ services:
       interval: 30s
       timeout: 10s
       retries: 3
-      start_period: 60s
+      start_period: 120s
 
   postgres:
     image: postgres:16-alpine
@@ -67,7 +65,7 @@ services:
   redis:
     image: redis:7-alpine
     container_name: pesatalk-redis
-    command: redis-server --appendonly yes ${REDIS_PASSWORD:+--requirepass $REDIS_PASSWORD}
+    command: redis-server --appendonly yes
     volumes:
       - redis_data:/data
     ports:
