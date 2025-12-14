@@ -1,0 +1,40 @@
+# Git
+.git
+.gitignore
+
+# IDE
+.idea
+*.iml
+.vscode
+
+# Build outputs
+target/
+build/
+*.class
+*.jar
+*.war
+
+# Logs
+*.log
+logs/
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Docker
+docker-compose*.yml
+Dockerfile
+nginx.conf
+
+# Documentation
+*.md
+docs/
+
+# Test files
+src/test/
+
+# OS files
+.DS_Store
+Thumbs.db
