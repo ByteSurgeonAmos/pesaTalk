@@ -1,0 +1,84 @@
+services:
+  # Spring Boot Application
+  - type: web
+    name: pesatalk
+    runtime: java
+    plan: free
+    region: oregon
+    buildCommand: ./mvnw clean package -DskipTests
+    startCommand: java $JAVA_OPTS --enable-preview -jar target/pesatalk-1.0.0-SNAPSHOT.jar
+    healthCheckPath: /actuator/health
+    autoDeploy: true
+    envVars:
+      # Spring Configuration
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod
+
+      - key: SERVER_PORT
+        value: 10000
+
+      # Database Configuration (Set after creating PostgreSQL)
+      - key: DATABASE_URL
+        sync: false
+
+      - key: DATABASE_USERNAME
+        sync: false
+
+      - key: DATABASE_PASSWORD
+        sync: false
+
+      # Redis Configuration (Set after creating Redis)
+      - key: REDIS_HOST
+        sync: false
+
+      - key: REDIS_PORT
+        value: 6379
+
+      - key: REDIS_PASSWORD
+        sync: false
+
+      # WhatsApp Configuration (Set these in Render Dashboard)
+      - key: WHATSAPP_PHONE_NUMBER_ID
+        sync: false
+
+      - key: WHATSAPP_ACCESS_TOKEN
+        sync: false
+
+      - key: WHATSAPP_VERIFY_TOKEN
+        sync: false
+
+      - key: WHATSAPP_APP_SECRET
+        sync: false
+
+      # MPesa Configuration (Set these in Render Dashboard)
+      - key: MPESA_API_BASE_URL
+        value: https://sandbox.safaricom.co.ke
+
+      - key: MPESA_CONSUMER_KEY
+        sync: false
+
+      - key: MPESA_CONSUMER_SECRET
+        sync: false
+
+      - key: MPESA_PASSKEY
+        sync: false
+
+      - key: MPESA_SHORTCODE
+        sync: false
+
+      - key: MPESA_CALLBACK_URL
+        sync: false
+
+      # Encryption Key (Generate with: openssl rand -hex 32)
+      - key: ENCRYPTION_PHONE_KEY
+        sync: false
+
+      # JVM Options
+      - key: JAVA_OPTS
+        value: "-XX:+UseContainerSupport -XX:MaxRAMPercentage=75.0 -XX:InitialRAMPercentage=50.0 -XX:+UseG1GC -XX:+UseStringDeduplication -Djava.security.egd=file:/dev/./urandom"
+
+databases:
+  - name: pesatalk-db
+    databaseName: pesatalk
+    user: pesatalk
+    plan: free
