@@ -18,23 +18,19 @@ This guide will walk you through deploying PesaTalk to Render.
    - Passkey
    - Business Shortcode
 
-## Step 1: Create PostgreSQL Database
+## Step 1: Database Already Configured ✓
 
-1. Go to https://dashboard.render.com
-2. Click **New** → **PostgreSQL**
-3. Configure:
-   - **Name**: `pesatalk-db`
-   - **Database**: `pesatalk`
-   - **User**: `pesatalk`
-   - **Region**: Oregon (or closest to you)
-   - **Plan**: Free
-4. Click **Create Database**
-5. Once created, note down:
-   - **Internal Database URL** (starts with `postgresql://`)
-   - **Username**
-   - **Password**
+You're using **Neon PostgreSQL** (serverless Postgres with generous free tier):
+- **Host**: ep-billowing-snow-ah8jns5f-pooler.c-3.us-east-1.aws.neon.tech
+- **Database**: pesatalk-db
+- **Username**: neondb_owner
+- **Free Tier**: 3GB storage, always-on
 
-## Step 2: Create Redis Instance
+No action needed - already configured in your `.env` file!
+
+## Step 2: Create Redis Instance (Choose One)
+
+### Option A: Render Redis (Simple)
 
 1. Click **New** → **Redis**
 2. Configure:
@@ -46,6 +42,17 @@ This guide will walk you through deploying PesaTalk to Render.
 4. Once created, note down:
    - **Internal Redis URL** (e.g., `pesatalk-redis:6379`)
    - **Redis Host** (the hostname part)
+
+### Option B: Upstash Redis (Free Tier Alternative)
+
+1. Go to https://upstash.com
+2. Create free account
+3. Click **Create Database**
+4. Choose **Global** (best for availability)
+5. Once created, note down:
+   - **Endpoint** (Redis host)
+   - **Port** (usually 6379)
+   - **Password** (if provided)
 
 ## Step 3: Deploy the Application
 
@@ -96,15 +103,15 @@ In your web service settings, go to **Environment** and add these variables:
 SPRING_PROFILES_ACTIVE=prod
 SERVER_PORT=10000
 
-# Database (from Step 1)
-DATABASE_URL=<Your Internal Database URL>
-DATABASE_USERNAME=pesatalk
-DATABASE_PASSWORD=<Your Database Password>
+# Database (Neon PostgreSQL - already configured)
+DATABASE_URL=jdbc:postgresql://ep-billowing-snow-ah8jns5f-pooler.c-3.us-east-1.aws.neon.tech/pesatalk-db?sslmode=require&channel_binding=require
+DATABASE_USERNAME=neondb_owner
+DATABASE_PASSWORD=npg_JgnF6VDR7xIA
 
 # Redis (from Step 2)
-REDIS_HOST=<Your Redis Host>
+REDIS_HOST=<Your Redis Host from Render or Upstash>
 REDIS_PORT=6379
-REDIS_PASSWORD=<Leave empty if no password>
+REDIS_PASSWORD=<Leave empty if no password, or Upstash password>
 
 # WhatsApp API (from your .env file)
 WHATSAPP_PHONE_NUMBER_ID=828972226976367
@@ -130,8 +137,8 @@ JAVA_OPTS=-XX:+UseContainerSupport -XX:MaxRAMPercentage=75.0 -XX:InitialRAMPerce
 #### Important Notes
 
 1. **Replace** `YOUR-APP-NAME` in `MPESA_CALLBACK_URL` with your actual Render app name
-2. **Get** `DATABASE_URL`, `DATABASE_USERNAME`, `DATABASE_PASSWORD` from your Render PostgreSQL service
-3. **Get** `REDIS_HOST` from your Render Redis service
+2. **Get** `REDIS_HOST` (and optionally `REDIS_PASSWORD`) from your Render Redis or Upstash service
+3. **Database** is already configured (Neon PostgreSQL)
 4. All WhatsApp and MPesa credentials are already configured in your `.env` file
 
 ## Step 5: Database Migration
@@ -255,21 +262,21 @@ Check logs for:
 
 ## Costs
 
-### Free Tier
+### Free Tier (Current Setup)
 
-- PostgreSQL: Free for 90 days
-- Redis: Free (25MB limit)
-- Web Service: Free (750 hours/month with spin-down)
+- **Neon PostgreSQL**: Free forever (3GB storage, 0.5GB RAM)
+- **Redis**: Free (Render: 25MB or Upstash: 10k commands/day)
+- **Web Service**: Free (750 hours/month with spin-down)
 
-**Total**: $0/month for first 90 days
+**Total**: $0/month indefinitely! 🎉
 
-### After Free Trial
+### Production Upgrade (Optional)
 
-- PostgreSQL: $7/month
-- Redis: Free (25MB limit) or $1/month (100MB)
-- Web Service: $7/month (no spin-down)
+- **Neon PostgreSQL**: Free (current plan is fine)
+- **Redis**: Free (Render) or $10/month (Upstash Pro for more connections)
+- **Web Service**: $7/month (Render Starter - no spin-down)
 
-**Total**: $14-15/month for production-ready setup
+**Total**: $7/month for production-ready setup (just upgrade web service)
 
 ## Support
 

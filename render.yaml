@@ -17,15 +17,15 @@ services:
       - key: SERVER_PORT
         value: 10000
 
-      # Database Configuration (Set after creating PostgreSQL)
+      # Database Configuration (Neon PostgreSQL)
       - key: DATABASE_URL
-        sync: false
+        value: jdbc:postgresql://ep-billowing-snow-ah8jns5f-pooler.c-3.us-east-1.aws.neon.tech/pesatalk-db?sslmode=require&channel_binding=require
 
       - key: DATABASE_USERNAME
-        sync: false
+        value: neondb_owner
 
       - key: DATABASE_PASSWORD
-        sync: false
+        value: npg_JgnF6VDR7xIA
 
       # Redis Configuration (Set after creating Redis)
       - key: REDIS_HOST
@@ -76,9 +76,3 @@ services:
       # JVM Options
       - key: JAVA_OPTS
         value: "-XX:+UseContainerSupport -XX:MaxRAMPercentage=75.0 -XX:InitialRAMPercentage=50.0 -XX:+UseG1GC -XX:+UseStringDeduplication -Djava.security.egd=file:/dev/./urandom"
-
-databases:
-  - name: pesatalk-db
-    databaseName: pesatalk
-    user: pesatalk
-    plan: free
