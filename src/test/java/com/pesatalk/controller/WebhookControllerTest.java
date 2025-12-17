@@ -1,6 +1,7 @@
 package com.pesatalk.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.pesatalk.config.SecurityConfig;
 import com.pesatalk.service.MessageProcessingService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
@@ -25,6 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(WebhookController.class)
+@Import(SecurityConfig.class)
 @TestPropertySource(properties = {
     "whatsapp.api.verify-token=test-verify-token",
     "whatsapp.api.app-secret=test-app-secret"

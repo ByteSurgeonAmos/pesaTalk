@@ -1,0 +1,81 @@
+services:
+  # Spring Boot Application
+  - type: web
+    name: pesatalk
+    runtime: java
+    plan: free
+    region: oregon
+    buildCommand: ./mvnw clean package -DskipTests
+    startCommand: java $JAVA_OPTS --enable-preview -jar target/pesatalk-1.0.0-SNAPSHOT.jar
+    healthCheckPath: /actuator/health
+    autoDeploy: true
+    envVars:
+      # Spring Configuration
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod
+
+      - key: SERVER_PORT
+        value: 10000
+
+      # Database Configuration (Neon PostgreSQL)
+      - key: DATABASE_URL
+        value: jdbc:postgresql://ep-billowing-snow-ah8jns5f-pooler.c-3.us-east-1.aws.neon.tech/pesatalk-db?sslmode=require&channel_binding=require
+
+      - key: DATABASE_USERNAME
+        value: neondb_owner
+
+      - key: DATABASE_PASSWORD
+        value: npg_JgnF6VDR7xIA
+
+      # Redis Configuration (Upstash)
+      - key: REDIS_HOST
+        value: sensible-catfish-22713.upstash.io
+
+      - key: REDIS_PORT
+        value: 6379
+
+      - key: REDIS_PASSWORD
+        value: AVi5AAIncDE5NTBiNmE0MzI3YTM0MDljYjg0ZTNlYzM4NTgyYTVlM3AxMjI3MTM
+
+      - key: REDIS_SSL
+        value: true
+
+      # WhatsApp Configuration (Set these in Render Dashboard)
+      - key: WHATSAPP_PHONE_NUMBER_ID
+        sync: false
+
+      - key: WHATSAPP_ACCESS_TOKEN
+        sync: false
+
+      - key: WHATSAPP_VERIFY_TOKEN
+        sync: false
+
+      - key: WHATSAPP_APP_SECRET
+        sync: false
+
+      # MPesa Configuration (Set these in Render Dashboard)
+      - key: MPESA_API_BASE_URL
+        value: https://sandbox.safaricom.co.ke
+
+      - key: MPESA_CONSUMER_KEY
+        sync: false
+
+      - key: MPESA_CONSUMER_SECRET
+        sync: false
+
+      - key: MPESA_PASSKEY
+        sync: false
+
+      - key: MPESA_SHORTCODE
+        sync: false
+
+      - key: MPESA_CALLBACK_URL
+        sync: false
+
+      # Encryption Key (Generate with: openssl rand -hex 32)
+      - key: ENCRYPTION_PHONE_KEY
+        sync: false
+
+      # JVM Options
+      - key: JAVA_OPTS
+        value: "-XX:+UseContainerSupport -XX:MaxRAMPercentage=75.0 -XX:InitialRAMPercentage=50.0 -XX:+UseG1GC -XX:+UseStringDeduplication -Djava.security.egd=file:/dev/./urandom"
