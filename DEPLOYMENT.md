@@ -28,31 +28,15 @@ You're using **Neon PostgreSQL** (serverless Postgres with generous free tier):
 
 No action needed - already configured in your `.env` file!
 
-## Step 2: Create Redis Instance (Choose One)
+## Step 2: Redis Already Configured ✓
 
-### Option A: Render Redis (Simple)
+You're using **Upstash Redis** (serverless Redis with generous free tier):
+- **Host**: sensible-catfish-22713.upstash.io
+- **Port**: 6379
+- **SSL**: Enabled (rediss://)
+- **Free Tier**: 10,000 commands/day, max 256MB
 
-1. Click **New** → **Redis**
-2. Configure:
-   - **Name**: `pesatalk-redis`
-   - **Region**: Oregon (same as database)
-   - **Plan**: Free (25MB)
-   - **Max Memory Policy**: `allkeys-lru` (recommended)
-3. Click **Create Redis**
-4. Once created, note down:
-   - **Internal Redis URL** (e.g., `pesatalk-redis:6379`)
-   - **Redis Host** (the hostname part)
-
-### Option B: Upstash Redis (Free Tier Alternative)
-
-1. Go to https://upstash.com
-2. Create free account
-3. Click **Create Database**
-4. Choose **Global** (best for availability)
-5. Once created, note down:
-   - **Endpoint** (Redis host)
-   - **Port** (usually 6379)
-   - **Password** (if provided)
+No action needed - already configured in your `.env` file!
 
 ## Step 3: Deploy the Application
 
@@ -108,10 +92,11 @@ DATABASE_URL=jdbc:postgresql://ep-billowing-snow-ah8jns5f-pooler.c-3.us-east-1.a
 DATABASE_USERNAME=neondb_owner
 DATABASE_PASSWORD=npg_JgnF6VDR7xIA
 
-# Redis (from Step 2)
-REDIS_HOST=<Your Redis Host from Render or Upstash>
+# Redis (Upstash - already configured)
+REDIS_HOST=sensible-catfish-22713.upstash.io
 REDIS_PORT=6379
-REDIS_PASSWORD=<Leave empty if no password, or Upstash password>
+REDIS_PASSWORD=AVi5AAIncDE5NTBiNmE0MzI3YTM0MDljYjg0ZTNlYzM4NTgyYTVlM3AxMjI3MTM
+REDIS_SSL=true
 
 # WhatsApp API (from your .env file)
 WHATSAPP_PHONE_NUMBER_ID=828972226976367
@@ -137,8 +122,8 @@ JAVA_OPTS=-XX:+UseContainerSupport -XX:MaxRAMPercentage=75.0 -XX:InitialRAMPerce
 #### Important Notes
 
 1. **Replace** `YOUR-APP-NAME` in `MPESA_CALLBACK_URL` with your actual Render app name
-2. **Get** `REDIS_HOST` (and optionally `REDIS_PASSWORD`) from your Render Redis or Upstash service
-3. **Database** is already configured (Neon PostgreSQL)
+2. **Database** is already configured (Neon PostgreSQL)
+3. **Redis** is already configured (Upstash)
 4. All WhatsApp and MPesa credentials are already configured in your `.env` file
 
 ## Step 5: Database Migration

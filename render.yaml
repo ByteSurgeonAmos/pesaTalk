@@ -27,15 +27,18 @@ services:
       - key: DATABASE_PASSWORD
         value: npg_JgnF6VDR7xIA
 
-      # Redis Configuration (Set after creating Redis)
+      # Redis Configuration (Upstash)
       - key: REDIS_HOST
-        sync: false
+        value: sensible-catfish-22713.upstash.io
 
       - key: REDIS_PORT
         value: 6379
 
       - key: REDIS_PASSWORD
-        sync: false
+        value: AVi5AAIncDE5NTBiNmE0MzI3YTM0MDljYjg0ZTNlYzM4NTgyYTVlM3AxMjI3MTM
+
+      - key: REDIS_SSL
+        value: true
 
       # WhatsApp Configuration (Set these in Render Dashboard)
       - key: WHATSAPP_PHONE_NUMBER_ID
